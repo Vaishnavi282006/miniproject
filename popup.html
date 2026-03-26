@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PhishGuard AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+  <!-- Live phishing-detection background animation -->
+  <canvas id="bgCanvas" class="bg-canvas"></canvas>
+  <div class="bg-mesh"></div>
+
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo-wrap">
+
+        <!-- Shield with multi-ring orbit animations -->
+        <div class="shield-ring">
+          <div class="shield-orbit shield-orbit-1"></div>
+          <div class="shield-orbit shield-orbit-2"></div>
+          <div class="shield-orbit shield-orbit-3"></div>
+          <div class="shield-glow-base"></div>
+          <svg class="shield-icon" viewBox="0 0 40 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 2L4 9V22C4 31.4 11.1 40.3 20 43C28.9 40.3 36 31.4 36 22V9L20 2Z"
+              stroke="url(#sg)" stroke-width="2" fill="url(#sf)"/>
+            <path d="M14 22L18 26L26 18" stroke="#7c3aed" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+            <defs>
+              <linearGradient id="sg" x1="4" y1="2" x2="36" y2="43" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#a78bfa"/>
+                <stop offset="100%" stop-color="#7c3aed"/>
+              </linearGradient>
+              <linearGradient id="sf" x1="4" y1="2" x2="36" y2="43" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#ede9fe" stop-opacity="0.95"/>
+                <stop offset="100%" stop-color="#ddd6fe" stop-opacity="0.6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+
+        <!-- Title stacked: PhishGuard on line 1, AI bold on line 2 -->
+        <div class="title-block">
+          <h1 class="title">
+            <span class="title-main">PhishGuard</span>
+            <span class="title-accent">AI</span>
+          </h1>
+          <p class="subtitle">Real-time Threat Detection</p>
+        </div>
+
+      </div>
+      <div class="status-dot">
+        <span class="dot-pulse"></span>
+        <span class="dot-label">ACTIVE</span>
+      </div>
+    </header>
+
+    <!-- TAB SYSTEM -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="url">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M12.9 3.1a6 6 0 010 8.5L9.4 15a6 6 0 01-8.5-8.5L4.4 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M7.1 16.9a6 6 0 010-8.5L10.6 5a6 6 0 018.5 8.5L15.6 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        URL Scan
+      </button>
+      <button class="tab-btn" data-tab="screenshot">
+        <svg viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><circle cx="7" cy="9" r="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M2 14l4-4 3 3 3-4 6 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Screenshot Scan
+      </button>
+      <div class="tab-slider"></div>
+    </div>
+
+    <!-- URL SCAN PANEL -->
+    <div class="panel active" id="panel-url">
+
+      <div class="url-card glass-card">
+        <div class="url-card-header">
+          <span class="card-label">TARGET URL</span>
+          <div class="url-mode-wrap">
+            <button class="use-tab-btn" id="useTabBtn" title="Use current tab URL">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="10" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 5h12" stroke="currentColor" stroke-width="1.3"/></svg>
+              Use Current Tab
+            </button>
+          </div>
+        </div>
+        <div class="url-input-wrap">
+          <svg viewBox="0 0 16 16" fill="none" class="url-icon">
+            <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M8 1.5C8 1.5 6 4 6 8s2 6.5 2 6.5M8 1.5C8 1.5 10 4 10 8s-2 6.5-2 6.5M1.5 8h13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          <input type="text" id="urlInput" class="url-input"
+            placeholder="https://example.com"
+            autocomplete="off" spellcheck="false"/>
+          <button class="url-clear-btn hidden" id="urlClearBtn" title="Clear">
+            <svg viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="scan-btn" id="scanUrlBtn">
+        <span class="btn-bg"></span>
+        <span class="btn-content">
+          <svg viewBox="0 0 20 20" fill="none" class="btn-icon"><circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M10 2v2M10 16v2M2 10h2M16 10h2M4.2 4.2l1.4 1.4M14.4 14.4l1.4 1.4M4.2 15.8l1.4-1.4M14.4 5.6l1.4-1.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Scan Website
+        </span>
+      </button>
+
+      <div class="loading-wrap hidden" id="urlLoading">
+        <div class="radar-ring">
+          <div class="radar-sweep"></div>
+          <div class="radar-center"></div>
+        </div>
+        <p class="loading-text">Analyzing URL<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+      </div>
+
+      <div class="result-card hidden" id="urlResult">
+        <div class="result-header">
+          <div class="result-icon-wrap">
+            <span class="result-icon" id="urlResultIcon"></span>
+          </div>
+          <div class="result-text-block">
+            <p class="result-verdict" id="urlResultVerdict"></p>
+            <p class="result-confidence" id="urlResultConfidence"></p>
+          </div>
+        </div>
+        <div class="result-divider"></div>
+        <p class="result-message" id="urlResultMessage"></p>
+      </div>
+
+      <div class="error-card hidden" id="urlError">
+        <span class="error-icon">⚠</span>
+        <span class="error-text" id="urlErrorText">Server not reachable</span>
+      </div>
+    </div>
+
+    <!-- SCREENSHOT SCAN PANEL -->
+    <div class="panel" id="panel-screenshot">
+      <div class="upload-zone glass-card" id="uploadZone">
+        <input type="file" id="imageInput" accept="image/*" hidden />
+        <div class="upload-idle" id="uploadIdle">
+          <div class="upload-icon-wrap">
+            <svg viewBox="0 0 40 40" fill="none" class="upload-svg">
+              <rect x="6" y="12" width="28" height="20" rx="3" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M20 8v12M15 13l5-5 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M14 28l4-5 3 3 3-4 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <p class="upload-title">Drop screenshot here</p>
+          <p class="upload-sub">or <span class="upload-link" id="uploadTrigger">browse files</span></p>
+        </div>
+        <div class="upload-preview hidden" id="uploadPreview">
+          <img id="previewImg" alt="Preview" />
+          <button class="preview-clear" id="clearImg">✕</button>
+        </div>
+      </div>
+
+      <button class="scan-btn" id="scanImgBtn">
+        <span class="btn-bg"></span>
+        <span class="btn-content">
+          <svg viewBox="0 0 20 20" fill="none" class="btn-icon"><rect x="3" y="4" width="14" height="11" rx="1.5" stroke="currentColor" stroke-width="1.7"/><circle cx="7.5" cy="8.5" r="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M3 13l4-4 3 3 3-4 7 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Analyze Screenshot
+        </span>
+      </button>
+
+      <div class="loading-wrap hidden" id="imgLoading">
+        <div class="img-analysis-wrap">
+          <div class="scan-frame">
+            <div class="scan-grid"></div>
+            <div class="corner-tr"></div>
+            <div class="corner-bl"></div>
+            <div class="detect-box"></div>
+            <div class="detect-box"></div>
+            <div class="detect-box"></div>
+            <div class="scan-beam"></div>
+          </div>
+          <div class="analysis-steps">
+            <div class="step-row">
+              <div class="step-dot"></div>
+              <div class="step-bar-wrap"><div class="step-bar"></div></div>
+              <span class="step-label">Pixel Extraction</span>
+            </div>
+            <div class="step-row">
+              <div class="step-dot"></div>
+              <div class="step-bar-wrap"><div class="step-bar"></div></div>
+              <span class="step-label">Feature Mapping</span>
+            </div>
+            <div class="step-row">
+              <div class="step-dot"></div>
+              <div class="step-bar-wrap"><div class="step-bar"></div></div>
+              <span class="step-label">CNN Inference</span>
+            </div>
+            <div class="step-row">
+              <div class="step-dot"></div>
+              <div class="step-bar-wrap"><div class="step-bar"></div></div>
+              <span class="step-label">Threat Scoring</span>
+            </div>
+          </div>
+          <p class="loading-text">Analyzing Visual Patterns<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+        </div>
+      </div>
+
+      <div class="result-card hidden" id="imgResult">
+        <div class="result-header">
+          <div class="result-icon-wrap">
+            <span class="result-icon" id="imgResultIcon"></span>
+          </div>
+          <div class="result-text-block">
+            <p class="result-verdict" id="imgResultVerdict"></p>
+            <p class="result-confidence" id="imgResultConfidence"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-card hidden" id="imgError">
+        <span class="error-icon">⚠</span>
+        <span class="error-text" id="imgErrorText">Please upload an image</span>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-line"></div>
+      <p class="footer-text">
+        <svg viewBox="0 0 14 14" fill="none" class="footer-icon"><path d="M7 1l1.8 3.6 4 .6-2.9 2.8.7 4L7 10l-3.6 2 .7-4L1.2 5.2l4-.6L7 1z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        Powered by AI Hybrid Model
+      </p>
+    </footer>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
